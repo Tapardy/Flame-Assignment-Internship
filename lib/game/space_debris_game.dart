@@ -7,41 +7,41 @@ import 'package:flame/components.dart';
 
 class SpaceDebrisGame extends FlameGame with KeyboardEvents {
   late Player player;
+  final Set<LogicalKeyboardKey> _keysPressed = {};
 
   @override
   Future<void> onLoad() async {
-    final playerImage = await images.load('player_palico');
     player = Player();
     add(player);
-    print(player);
+    camera = CameraComponent.withFixedResolution(width: 800, height: 800);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    print(player.position);
+    camera.follow(player);
+    if (_keysPressed.contains(LogicalKeyboardKey.keyW)) {
+      player.moveUp(5);
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.keyS)) {
+      player.moveDown(5);
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.keyA)) {
+      player.moveLeft(5);
+    }
+    if (_keysPressed.contains(LogicalKeyboardKey.keyD)) {
+      player.moveRight(5);
+    }
   }
 
   @override
   KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.keyW) {
-        player.moveUp(5);
-        print('moved up');
-        return KeyEventResult.handled;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyS) {
-        player.moveDown(5);
-        return KeyEventResult.handled;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyA) {
-        player.moveLeft(5);
-        return KeyEventResult.handled;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyD) {
-        player.moveRight(5);
-        return KeyEventResult.handled;
-      }
+      _keysPressed.add(event.logicalKey);
+      return KeyEventResult.handled;
+    } else if (event is KeyUpEvent) {
+      _keysPressed.remove(event.logicalKey);
+      return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
   }

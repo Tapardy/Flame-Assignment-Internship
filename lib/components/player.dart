@@ -6,12 +6,14 @@ import 'movable_position_component.dart';
 class Player extends MovablePositionComponent with HasGameRef<SpaceDebrisGame> {
   late Sprite sprite;
 
-  Player() : super(size: Vector2(500, 500)); 
+  Player() : super(size: Vector2(50, 50)); 
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('player_palico.png');
-    position = gameRef.size / 2; 
+    sprite = await Sprite.load('player_palico.png'); 
+    print('Sprite loaded: $sprite');
+    anchor = Anchor.center;
+    position = Vector2(0, 0); 
   }
 
   @override
